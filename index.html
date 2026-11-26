@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
   <title>Тропа — маршруты на выходные</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/script.js" defer></script>
@@ -22,18 +23,16 @@
   <main id="main">
     <section class="hero" aria-labelledby="intro">
       <div>
-        <h1 id="intro">Пора выйти<br>из города.</h1>
-        <p>Найдите свою тропу на выходные.<br>Без долгих поисков — с понятным планом.</p>
+        <h1 id="intro">Маршруты<br>на выходные</h1>
         <a class="action" href="#filters">Подобрать маршрут</a>
       </div>
       <figure>
         <img src="images/0.jpg" width="600" height="320" alt="Горный хребет с заснеженными вершинами">
-        <figcaption>Один день за пределами привычного</figcaption>
       </figure>
     </section>
 
     <section id="filters">
-      <h2>Куда отправимся?</h2>
+      <h2>Подбор маршрута</h2>
       <form action="#catalog" method="get" role="search">
         <label>
           Название или место
@@ -69,75 +68,27 @@
         </fieldset>
         <button type="reset" disabled>Сбросить</button>
       </form>
-      <noscript>Поиск требует JavaScript. Все шесть маршрутов доступны ниже.</noscript>
+      <noscript>Для загрузки маршрутов включите JavaScript в браузере.</noscript>
     </section>
 
     <section id="catalog">
       <div class="catalog-heading">
-        <h2>Выберите свою тропу</h2>
-      <p id="count" role="status">Маршрутов в каталоге: 6</p>
+        <h2>Каталог маршрутов</h2>
+        <p id="count" role="status">Загрузка маршрутов…</p>
       </div>
-      <div class="cards">
-        <article data-hours="3" data-level="Лёгкий" data-kind="Лес">
-          <img src="images/1.jpg" alt="Солнечные лучи между стволами сосен" width="400" height="180">
-          <p class="place">Карелия · Ладожское озеро</p>
-          <h3>Сосновый берег</h3>
-          <p>Тропа между соснами и водой. У поляны на берегу можно устроить привал и вернуться той же дорогой.</p>
-          <p class="facts">6,4 км · 2–3 часа</p>
-          <p class="tags"><span>Лёгкий</span> <span>Лес</span></p>
-          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
+      <div class="cards" id="routes"></div>
+      <template id="route-template">
+        <article>
+          <img width="400" height="180" alt="">
+          <p class="place"></p>
+          <h3></h3>
+          <p class="description"></p>
+          <p class="facts"></p>
+          <p class="tags"><span class="level"></span> <span class="kind"></span></p>
+          <button class="save" type="button">Сохранить маршрут</button>
         </article>
-
-        <article data-hours="6" data-level="Сложный" data-kind="Горы">
-          <img src="images/2.jpg" alt="Горный массив со снежными вершинами" width="400" height="180">
-          <p class="place">Кавказ · Архыз</p>
-          <h3>Выше облаков</h3>
-          <p>Открытые склоны и вид на горный хребет. Для тех, кто готов к долгому подъёму.</p>
-          <p class="facts">11,2 км · 5–6 часов</p>
-          <p class="tags"><span>Сложный</span> <span>Горы</span></p>
-          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
-        </article>
-
-        <article data-hours="2" data-level="Лёгкий" data-kind="У воды">
-          <img src="images/3.jpg" alt="Лесная поляна в окружении деревьев" width="400" height="180">
-          <p class="place">Алтай · Телецкое озеро</p>
-          <h3>Тропа к озеру</h3>
-          <p>Прогулка по лесной кромке к воде с остановкой на пикник.</p>
-          <p class="facts">4,8 км · 2 часа</p>
-          <p class="tags"><span>Лёгкий</span> <span>У воды</span></p>
-          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
-        </article>
-
-        <article data-hours="5" data-level="Средний" data-kind="Горы">
-          <img src="images/4.jpg" alt="Заснеженные склоны горного хребта" width="400" height="180">
-          <p class="place">Урал · Таганай</p>
-          <h3>Каменный горизонт</h3>
-          <p>Тропа через каменные россыпи к открытой смотровой площадке.</p>
-          <p class="facts">9,6 км · 4–5 часов</p>
-          <p class="tags"><span>Средний</span> <span>Горы</span></p>
-          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
-        </article>
-
-        <article data-hours="3" data-level="Лёгкий" data-kind="У воды">
-          <img src="images/5.jpg" alt="Отражение пейзажа в воде" width="400" height="180">
-          <p class="place">Подмосковье · долина Истры</p>
-          <h3>Вдоль тихой реки</h3>
-          <p>Луга и речные повороты. Спокойный вариант для короткого выезда.</p>
-          <p class="facts">7,1 км · 3 часа</p>
-          <p class="tags"><span>Лёгкий</span> <span>У воды</span></p>
-          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
-        </article>
-
-        <article data-hours="4" data-level="Средний" data-kind="Лес">
-          <img src="images/6.jpg" alt="Тропинка среди густых зелёных деревьев" width="400" height="180">
-          <p class="place">Ленобласть · Комарово</p>
-          <h3>Лесной круг</h3>
-          <p>Круговая прогулка под высоким лесным пологом с возвращением к старту.</p>
-          <p class="facts">8,3 км · 3–4 часа</p>
-          <p class="tags"><span>Средний</span> <span>Лес</span></p>
-          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
-        </article>
-      </div>
+      </template>
+      <button type="button" id="retry" hidden>Загрузить ещё раз</button>
       <p id="empty" hidden><span>По этим условиям ничего не найдено.</span> <a href="#filters">К параметрам поиска</a></p>
     </section>
 
@@ -146,13 +97,12 @@
       <ol>
         <li>Решите, сколько времени есть на всю прогулку, включая возвращение.</li>
         <li>Сравните длину и сложность. Для первого выхода начните с лёгкого маршрута.</li>
-        <li>Выберите пейзаж: лес, берег или горы.</li>
+        <li>Перед поездкой проверьте, как добраться до начала тропы и как вернуться.</li>
       </ol>
     </section>
 
     <section id="packing">
       <h2>Перед прогулкой</h2>
-      <p>Проверьте, всё ли готово к выходу.</p>
       <details>
         <summary>Открыть памятку</summary>
         <ul>
