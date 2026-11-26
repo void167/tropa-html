@@ -179,10 +179,10 @@ section {
   gap: 48px;
 }
 
-.hero p {
-  color: var(--muted);
-  margin: var(--gap) 0;
-  font-size: 20px;
+
+
+.hero .action {
+  margin-top: var(--gap);
 }
 
 .hero figure {
@@ -197,16 +197,6 @@ section {
   border-radius: var(--radius);
 }
 
-figcaption {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 20px;
-  padding: var(--sm);
-  background: white;
-  border-radius: var(--control-radius);
-  font-size: 14px;
-}
 
 #filters {
   padding: var(--gap);
@@ -471,9 +461,7 @@ footer {
     gap: 24px;
   }
 
-  .hero p {
-    font-size: 17px;
-  }
+  
 
   .hero img {
     height: 270px;
