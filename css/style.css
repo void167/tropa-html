@@ -1,0 +1,170 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: auto;
+  max-width: 1160px;
+  padding: 0 4%;
+  background: #faf9f4;
+  color: #25392b;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+header, nav, form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+header {
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid #cbd3c8;
+}
+
+a {
+  color: #285338;
+}
+
+.brand {
+  font-size: 1.7rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.hero img, article img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.hero img {
+  height: 300px;
+}
+
+h1, h2, h3 {
+  line-height: 1.12;
+}
+
+h1 {
+  font-size: 64px;
+  margin: 0;
+}
+
+h2 {
+  font-size: 1.65rem;
+  margin: 0 0 .9rem;
+}
+
+section {
+  margin: 0 0 2.25rem;
+}
+
+#filters {
+  background: #e9eddf;
+  padding: 1.25rem;
+}
+
+form {
+  align-items: end;
+  gap: .75rem;
+}
+
+label {
+  display: grid;
+  gap: .25rem;
+  font-size: .9rem;
+}
+
+input, select, button, .action {
+  font: inherit;
+  padding: .55rem .7rem;
+  border: 1px solid #909e8e;
+  border-radius: .2rem;
+}
+
+button {
+  cursor: pointer;
+  background: white;
+}
+
+button[type=submit], .action {
+  background: #284a34;
+  color: white;
+  border-color: #284a34;
+}
+
+.action {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.3rem;
+}
+
+article {
+  border-bottom: 1px solid #cbd3c8;
+  padding-bottom: .75rem;
+}
+
+article img {
+  display: block;
+  height: 10.5rem;
+}
+
+article p, article h3 {
+  margin: .6rem 0;
+}
+
+.place, .facts {
+  font-size: .88rem;
+}
+
+summary {
+  cursor: pointer;
+}
+
+footer {
+  border-top: 1px solid #cbd3c8;
+  padding: 1rem 0;
+  font-size: .9rem;
+}
+
+/* На планшете помещаются две карточки, на телефоне — одна. */
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero, .cards {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 44px;
+  }
+
+  .hero img {
+    height: 210px;
+  }
+
+  form label {
+    width: 100%;
+  }
+}
