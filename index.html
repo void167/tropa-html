@@ -8,6 +8,7 @@
   <script src="js/script.js" defer></script>
 </head>
 <body id="top">
+  <a class="skip" href="#main">К содержанию</a>
   <header>
     <a class="brand" href="#top">тропа</a>
     <nav aria-label="Разделы страницы">
@@ -15,16 +16,20 @@
       <a href="#guide">Как выбрать</a>
       <a href="#packing">Перед прогулкой</a>
     </nav>
+    <button id="favorites" type="button" aria-pressed="false">Мои маршруты</button>
   </header>
 
-  <main>
+  <main id="main">
     <section class="hero" aria-labelledby="intro">
       <div>
         <h1 id="intro">Пора выйти<br>из города.</h1>
-        <p>Подберите прогулку на выходные по месту, времени и сложности.</p>
+        <p>Найдите свою тропу на выходные.<br>Без долгих поисков — с понятным планом.</p>
         <a class="action" href="#filters">Подобрать маршрут</a>
       </div>
-      <img src="images/0.jpg" width="600" height="320" alt="Горный хребет с заснеженными вершинами">
+      <figure>
+        <img src="images/0.jpg" width="600" height="320" alt="Горный хребет с заснеженными вершинами">
+        <figcaption>Один день за пределами привычного</figcaption>
+      </figure>
     </section>
 
     <section id="filters">
@@ -32,7 +37,8 @@
       <form action="#catalog" method="get" role="search">
         <label>
           Название или место
-          <input type="search" name="q" placeholder="Например, Карелия">
+          <input type="search" name="q" aria-describedby="search-error" placeholder="Например, Карелия">
+          <small id="search-error" hidden>Сократите запрос до 80 символов.</small>
         </label>
         <label>
           Время на прогулку
@@ -52,31 +58,34 @@
             <option>Сложный</option>
           </select>
         </label>
-        <label>
-          Местность
-          <select name="kind">
-            <option value="">Любая</option>
-            <option>Лес</option>
-            <option>Горы</option>
-            <option>У воды</option>
-          </select>
-        </label>
+
         <button type="submit">Показать маршруты</button>
-        <button type="reset">Сбросить</button>
+        <fieldset>
+          <legend>Местность</legend>
+          <label><input type="radio" name="kind" value="" checked>Все</label>
+          <label><input type="radio" name="kind" value="Лес">Лес</label>
+          <label><input type="radio" name="kind" value="Горы">Горы</label>
+          <label><input type="radio" name="kind" value="У воды">У воды</label>
+        </fieldset>
+        <button type="reset" disabled>Сбросить</button>
       </form>
       <noscript>Поиск требует JavaScript. Все шесть маршрутов доступны ниже.</noscript>
     </section>
 
     <section id="catalog">
-      <h2>Выберите свою тропу</h2>
+      <div class="catalog-heading">
+        <h2>Выберите свою тропу</h2>
       <p id="count" role="status">Маршрутов в каталоге: 6</p>
+      </div>
       <div class="cards">
         <article data-hours="3" data-level="Лёгкий" data-kind="Лес">
           <img src="images/1.jpg" alt="Солнечные лучи между стволами сосен" width="400" height="180">
           <p class="place">Карелия · Ладожское озеро</p>
           <h3>Сосновый берег</h3>
           <p>Тропа между соснами и водой. У поляны на берегу можно устроить привал и вернуться той же дорогой.</p>
-          <p class="facts">6,4 км · 2–3 часа · Лёгкий · Лес</p>
+          <p class="facts">6,4 км · 2–3 часа</p>
+          <p class="tags"><span>Лёгкий</span> <span>Лес</span></p>
+          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
         </article>
 
         <article data-hours="6" data-level="Сложный" data-kind="Горы">
@@ -84,7 +93,9 @@
           <p class="place">Кавказ · Архыз</p>
           <h3>Выше облаков</h3>
           <p>Открытые склоны и вид на горный хребет. Для тех, кто готов к долгому подъёму.</p>
-          <p class="facts">11,2 км · 5–6 часов · Сложный · Горы</p>
+          <p class="facts">11,2 км · 5–6 часов</p>
+          <p class="tags"><span>Сложный</span> <span>Горы</span></p>
+          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
         </article>
 
         <article data-hours="2" data-level="Лёгкий" data-kind="У воды">
@@ -92,7 +103,9 @@
           <p class="place">Алтай · Телецкое озеро</p>
           <h3>Тропа к озеру</h3>
           <p>Прогулка по лесной кромке к воде с остановкой на пикник.</p>
-          <p class="facts">4,8 км · 2 часа · Лёгкий · У воды</p>
+          <p class="facts">4,8 км · 2 часа</p>
+          <p class="tags"><span>Лёгкий</span> <span>У воды</span></p>
+          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
         </article>
 
         <article data-hours="5" data-level="Средний" data-kind="Горы">
@@ -100,7 +113,9 @@
           <p class="place">Урал · Таганай</p>
           <h3>Каменный горизонт</h3>
           <p>Тропа через каменные россыпи к открытой смотровой площадке.</p>
-          <p class="facts">9,6 км · 4–5 часов · Средний · Горы</p>
+          <p class="facts">9,6 км · 4–5 часов</p>
+          <p class="tags"><span>Средний</span> <span>Горы</span></p>
+          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
         </article>
 
         <article data-hours="3" data-level="Лёгкий" data-kind="У воды">
@@ -108,7 +123,9 @@
           <p class="place">Подмосковье · долина Истры</p>
           <h3>Вдоль тихой реки</h3>
           <p>Луга и речные повороты. Спокойный вариант для короткого выезда.</p>
-          <p class="facts">7,1 км · 3 часа · Лёгкий · У воды</p>
+          <p class="facts">7,1 км · 3 часа</p>
+          <p class="tags"><span>Лёгкий</span> <span>У воды</span></p>
+          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
         </article>
 
         <article data-hours="4" data-level="Средний" data-kind="Лес">
@@ -116,10 +133,12 @@
           <p class="place">Ленобласть · Комарово</p>
           <h3>Лесной круг</h3>
           <p>Круговая прогулка под высоким лесным пологом с возвращением к старту.</p>
-          <p class="facts">8,3 км · 3–4 часа · Средний · Лес</p>
+          <p class="facts">8,3 км · 3–4 часа</p>
+          <p class="tags"><span>Средний</span> <span>Лес</span></p>
+          <button class="save" type="button" aria-pressed="false">Сохранить маршрут</button>
         </article>
       </div>
-      <p id="empty" hidden>По этим условиям ничего не найдено. <a href="#filters">Изменить параметры</a></p>
+      <p id="empty" hidden><span>По этим условиям ничего не найдено.</span> <a href="#filters">К параметрам поиска</a></p>
     </section>
 
     <section id="guide">
@@ -133,6 +152,7 @@
 
     <section id="packing">
       <h2>Перед прогулкой</h2>
+      <p>Проверьте, всё ли готово к выходу.</p>
       <details>
         <summary>Открыть памятку</summary>
         <ul>
