@@ -9,7 +9,6 @@
 
 - [Финальный макет в Figma](https://www.figma.com/design/shdTFXNU6lG5ilggyVdC7s/?node-id=5-1356)
 - [Исследование и каркасы](https://www.figma.com/design/NE2wvJkIDZAqLbAKLA1RYS/?node-id=12-2)
-- [Страница, открытая через Live Server](docs/screenshot.jpg)
 
 ## Функции
 
