@@ -1,102 +1,164 @@
 const form = document.querySelector('form');
-const cards = document.querySelectorAll('.cards article');
-const counter = document.querySelector('#count');
+const fields = form.elements;
+const catalog = document.querySelector('#routes');
+const template = document.querySelector('#route-template');
+const count = document.querySelector('#count');
 const empty = document.querySelector('#empty');
-const error = document.querySelector('#search-error');
+const retry = document.querySelector('#retry');
 const favorites = document.querySelector('#favorites');
 const reset = form.querySelector('[type="reset"]');
+
+let routes = [];
+let ready = false;
 let onlySaved = false;
+let filters = {};
 let saved = new Set();
 
 try {
   const names = JSON.parse(localStorage.getItem('tropa-routes') || '[]');
   if (Array.isArray(names)) saved = new Set(names);
 } catch {
-  // Если браузер запрещает хранение, избранное работает до закрытия страницы.
+  // В приватном режиме избранное всё равно можно хранить до закрытия вкладки.
 }
 
-function refreshButtons() {
-  const fields = form.elements;
-  reset.disabled = !fields.q.value && !fields.hours.value && !fields.level.value
-    && !fields.kind.value && !onlySaved && !document.querySelector('article[hidden]');
+function readFilters() {
+  return {
+    text: fields.q.value.trim().toLowerCase(),
+    hours: Number(fields.hours.value),
+    level: fields.level.value,
+    kind: fields.kind.value
+  };
+}
+
+function hasFilters(values) {
+  return Boolean(values.text || values.hours || values.level || values.kind);
+}
+
+function updateReset() {
+  reset.disabled = !ready || !(onlySaved || hasFilters(filters) || hasFilters(readFilters()) || fields.q.value);
 }
 
 function validateSearch() {
-  const valid = form.elements.q.value.trim().length <= 80;
-  error.hidden = valid;
-  form.elements.q.setAttribute('aria-invalid', String(!valid));
-  form.elements.q.setCustomValidity(valid ? '' : error.textContent);
-  return valid;
+  const error = document.querySelector('#search-error');
+  const invalid = fields.q.value.trim().length > 80;
+  error.hidden = !invalid;
+  fields.q.setAttribute('aria-invalid', String(invalid));
+  fields.q.setCustomValidity(invalid ? error.textContent : '');
 }
 
-function showResults() {
-  const fields = form.elements;
-  const query = fields.q.value.trim().toLowerCase();
-  let found = 0;
-  for (const card of cards) {
-    const name = card.querySelector('h3').textContent;
-    const place = card.querySelector('.place').textContent;
-    const matchesText = (name + ' ' + place).toLowerCase().includes(query);
-    const matchesTime = !fields.hours.value || Number(card.dataset.hours) <= Number(fields.hours.value);
-    const matchesLevel = !fields.level.value || card.dataset.level === fields.level.value;
-    const matchesKind = !fields.kind.value || card.dataset.kind === fields.kind.value;
-    const matchesSaved = !onlySaved || saved.has(name);
+function matchesFilters(route) {
+  const text = (route.name + ' ' + route.place).toLowerCase();
+  return text.includes(filters.text)
+    && (!filters.hours || route.hours <= filters.hours)
+    && (!filters.level || route.level === filters.level)
+    && (!filters.kind || route.kind === filters.kind)
+    && (!onlySaved || saved.has(route.name));
+}
 
-    card.hidden = !(matchesText && matchesTime && matchesLevel && matchesKind && matchesSaved);
-    if (!card.hidden) found++;
+function createCard(route) {
+  const card = template.content.firstElementChild.cloneNode(true);
+  const image = card.querySelector('img');
+  image.src = route.image;
+  image.alt = route.alt;
+  card.querySelector('h3').textContent = route.name;
+  card.querySelector('.place').textContent = route.place;
+  card.querySelector('.description').textContent = route.description;
+  card.querySelector('.facts').textContent = route.km + ' · ' + route.time;
+  card.querySelector('.level').textContent = route.level;
+  card.querySelector('.kind').textContent = route.kind;
+  const button = card.querySelector('.save');
+  button.dataset.id = route.id;
+  button.setAttribute('aria-pressed', String(saved.has(route.name)));
+  button.textContent = saved.has(route.name) ? 'Убрать из избранного' : 'Сохранить маршрут';
+  return card;
+}
 
-    const button = card.querySelector('.save');
-    button.setAttribute('aria-pressed', String(saved.has(name)));
-    button.textContent = saved.has(name) ? 'Убрать из избранного' : 'Сохранить маршрут';
-  }
-  counter.textContent = (onlySaved ? 'Мои маршруты: ' : 'Маршрутов: ') + found;
-  empty.hidden = found !== 0;
-  empty.querySelector('span').textContent = onlySaved && saved.size === 0
-    ? 'Вы пока ничего не сохранили. Нажмите «Мои маршруты» ещё раз, чтобы открыть весь каталог.'
+function renderRoutes() {
+  const shown = routes.filter(matchesFilters);
+  catalog.replaceChildren();
+  for (const route of shown) catalog.append(createCard(route));
+  count.textContent = (onlySaved ? 'В избранном: ' : 'Маршрутов: ') + shown.length;
+  empty.hidden = shown.length > 0;
+  empty.querySelector('span').textContent = onlySaved && !saved.size
+    ? 'Избранное пусто. Отключите «Мои маршруты», чтобы увидеть каталог.'
     : 'По этим условиям ничего не найдено.';
   favorites.setAttribute('aria-pressed', String(onlySaved));
-  refreshButtons();
+  updateReset();
+}
+
+async function loadRoutes() {
+  ready = false;
+  form.querySelector('[type="submit"]').disabled = true;
+  favorites.disabled = true;
+  reset.disabled = true;
+  retry.hidden = true;
+  empty.hidden = true;
+  catalog.replaceChildren();
+  count.textContent = 'Загрузка маршрутов…';
+  try {
+    const response = await fetch('./data/data.json');
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const data = await response.json();
+    if (!Array.isArray(data)) throw new Error('Ожидался список маршрутов');
+    routes = data;
+    filters = readFilters();
+    renderRoutes();
+    ready = true;
+    favorites.disabled = false;
+    form.querySelector('[type="submit"]').disabled = false;
+    updateReset();
+    console.info('Тропа: загружено маршрутов — ' + routes.length);
+  } catch {
+    catalog.replaceChildren();
+    count.textContent = 'Не удалось загрузить маршруты. Проверьте соединение и попробуйте ещё раз.';
+    retry.hidden = false;
+  }
 }
 
 form.addEventListener('input', () => {
   validateSearch();
-  refreshButtons();
+  updateReset();
 });
 
 form.addEventListener('submit', event => {
   event.preventDefault();
-  if (!validateSearch()) return;
-  showResults();
+  if (!ready) return;
+  filters = readFilters();
+  renderRoutes();
   location.hash = 'catalog';
 });
 
 form.addEventListener('reset', () => {
   onlySaved = false;
-  // Браузер очищает поля сразу после события reset.
+  // Сначала браузер возвращает полям исходные значения.
   requestAnimationFrame(() => {
     validateSearch();
-    showResults();
+    filters = readFilters();
+    if (ready) renderRoutes();
   });
 });
 
-for (const card of cards) {
-  card.querySelector('.save').addEventListener('click', () => {
-    const name = card.querySelector('h3').textContent;
-    if (saved.has(name)) saved.delete(name);
-    else saved.add(name);
-    try {
-      localStorage.setItem('tropa-routes', JSON.stringify([...saved]));
-    } catch {
-      // Выбор остаётся в памяти вкладки.
-    }
-    showResults();
-  });
-}
+catalog.addEventListener('click', event => {
+  const button = event.target.closest('.save');
+  if (!button) return;
+  const route = routes.find(item => item.id === Number(button.dataset.id));
+  if (saved.has(route.name)) saved.delete(route.name);
+  else saved.add(route.name);
+  try {
+    localStorage.setItem('tropa-routes', JSON.stringify([...saved]));
+  } catch {
+    // Если запись недоступна, выбор остаётся в памяти.
+  }
+  renderRoutes();
+  const next = catalog.querySelector('[data-id="' + route.id + '"]') || catalog.querySelector('.save') || favorites;
+  next.focus({preventScroll:true});
+});
 
 favorites.addEventListener('click', () => {
   onlySaved = !onlySaved;
-  showResults();
+  renderRoutes();
   location.hash = 'catalog';
 });
 
-showResults();
+retry.addEventListener('click', loadRoutes);
+loadRoutes();
