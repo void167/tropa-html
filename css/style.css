@@ -304,7 +304,7 @@ button[type="reset"] {
 
 #count, .place, .facts {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 14px ;
 }
 
 .cards {
